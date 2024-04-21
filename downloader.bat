@@ -7,18 +7,19 @@ echo ========================================
 echo Please wait. Checking for updates.
 
 set "url=https://raw.githubusercontent.com/michelle1574/downloader-maker/main/version-downloader.txt"
-set "batfileversion=public-1.1"
+set "batfileversion=public-1.3"
 set "temp_file=temp.txt"
 
 curl "%url%" -o "%temp_file%"
 
+REM Read the first line of the file and remove leading/trailing spaces
 set /p content=<"%temp_file%"
-
-rem Remove leading and trailing spaces from both strings before comparison
 for /f "tokens=* delims= " %%a in ("!content!") do set "content=%%a"
-for /f "tokens=* delims= " %%b in ("%batfileversion%") do set "batfileversion=%%b"
 
-if "!batfileversion!"=="!content!" (
+REM Remove the temporary file
+del "%temp_file%"
+
+if "%batfileversion%"=="%content%" (
     echo Is up to date, continuing.
     goto main
 ) else (
@@ -42,14 +43,10 @@ if "!batfileversion!"=="!content!" (
             echo del downloader.bat >> "%variablefortemp%"
             echo ren downloader-updated.bat downloader.bat >> "%variablefortemp%"
             echo call downloader.bat >> "%variablefortemp%"
-            del "%temp_file%"
             call "%variablefortemp%"
         )
     )
 )
-
-
-del "%temp_file%"
 
 :main
 
@@ -88,10 +85,11 @@ set /p "urltoadd=Enter URL to download (leave empty to finish): "
 if not "%urltoadd%"=="" (
     for /f "tokens=*" %%F in ("%urltoadd%") do (
         set "filename=%%~nxF"
-        echo curl -o "%outputfolder%\%%~nxF" "%%F" >> "%batfilename%"
+        echo curl "%%F" >> "%batfilename%"
     )
     goto addurl
 )
+
 
 :compile
 echo echo Files downloaded. >> "%batfilename%"
