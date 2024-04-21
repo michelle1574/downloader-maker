@@ -7,14 +7,18 @@ echo ========================================
 echo Please wait. Checking for updates.
 
 set "url=https://raw.githubusercontent.com/michelle1574/downloader-maker/main/version-downloader.txt"
-set "batfileversion=public-1.0"
+set "batfileversion=public-1.1"
 set "temp_file=temp.txt"
 
 curl "%url%" -o "%temp_file%"
 
 set /p content=<"%temp_file%"
 
-if "%batfileversion%"=="!content!" (
+rem Remove leading and trailing spaces from both strings before comparison
+for /f "tokens=* delims= " %%a in ("!content!") do set "content=%%a"
+for /f "tokens=* delims= " %%b in ("%batfileversion%") do set "batfileversion=%%b"
+
+if "!batfileversion!"=="!content!" (
     echo Is up to date, continuing.
     goto main
 ) else (
@@ -43,6 +47,7 @@ if "%batfileversion%"=="!content!" (
         )
     )
 )
+
 
 del "%temp_file%"
 
