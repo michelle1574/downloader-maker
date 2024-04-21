@@ -7,7 +7,7 @@ echo ========================================
 echo Please wait. Checking for updates.
 
 set "url=https://raw.githubusercontent.com/michelle1574/downloader-maker/main/version-downloader.txt"
-set "batfileversion=public-1.3"
+set "batfileversion=public-1.4"
 set "temp_file=temp.txt"
 
 curl "%url%" -o "%temp_file%"
@@ -85,7 +85,8 @@ set /p "urltoadd=Enter URL to download (leave empty to finish): "
 if not "%urltoadd%"=="" (
     for /f "tokens=*" %%F in ("%urltoadd%") do (
         set "filename=%%~nxF"
-        echo curl "%%F" >> "%batfilename%"
+        echo Downloading file "%%~nxF" >> "%batfilename%"
+        echo curl -o "%outputfolder%\%%~nxF" "%%F" >> "%batfilename%"
     )
     goto addurl
 )
